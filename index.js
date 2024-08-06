@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
 
 // Declarations
 const appSettings = {
@@ -21,15 +21,22 @@ addButtonEl.addEventListener("click", function() {
     push(shoppingListInDB, inputValue)
 
     clearInputFieldEl()
-
-    appendItemToShoppingListEl(inputValue)
 })
 
-    // clears the input fiesld after every entry
+onValue(shoppingListInDB, function(snapshot) {
+    let itemsArray = Object.values(snapshot.val())
+
+    shoppingListEl.innerHTML = ""
+
+    for (let i = 0; i < itemsArray.length; i++) {
+        appendItemToShoppingListEl(itemsArray[i])
+    }
+})
+    // function clears the input fiesld after every entry
 function clearInputFieldEl() {
     inputFieldEl.value = ""
 }
-    // Appends existing list of items
+    //function Appends existing list of items
 function appendItemToShoppingListEl(itemValue) {
     shoppingListEl.innerHTML += `<li>${itemValue}</li>`
 }
